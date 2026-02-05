@@ -37,7 +37,26 @@ application {
     mainClass = "java.minesweeper.App"
 }
 
+tasks.named<org.gradle.jvm.tasks.Jar>("jar") {
+    manifest {
+        attributes(mapOf("Main-Class" to application.mainClass.get()))
+    }
+}
+
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+sourceSets {
+    named("main") {
+        java {
+            srcDirs("src/app/")
+        }
+    }
+    named("test") {
+        java {
+            srcDirs("src/test/")
+        }
+    }
 }
