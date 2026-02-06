@@ -65,6 +65,11 @@ public class Minesweeper {
         return grid;
     }
 
+    public void flag(int x, int y) {
+        Space space = grid[y][x];
+        space.setFlag(!space.isFlagged());
+    }
+
     public int flip(int x, int y) {
         if (!started)
             generateGrid(x, y);
