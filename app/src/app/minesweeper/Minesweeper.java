@@ -3,12 +3,18 @@ package minesweeper;
 import java.util.Random;
 
 public class Minesweeper {
+    public static final int FLIP_SUCCESS = 0;
+    public static final int FLIP_BOMB = 1;
+    public static final int FLIP_WIN = 2;
+
     Space[][] grid;
     boolean started;
 
     int width;
     int height;
     int numberOfMine;
+
+    int clickLeft;
 
     public Minesweeper(int width, int height, int numberOfMine) {
         if (numberOfMine > width * height - 1)
@@ -17,6 +23,7 @@ public class Minesweeper {
         this.width = width;
         this.height = height;
         this.numberOfMine = numberOfMine;
+        this.clickLeft = width * height - numberOfMine - 1;
 
         grid = new Space[height][width];
         for (int y = 0; y < grid.length; y++) {
@@ -38,10 +45,49 @@ public class Minesweeper {
                 generatedMine++;
             }
         }
+        started = true;
     }
 
     public int getSurroundingMineCount(int x, int y) {
-        int count = 0;
+        int[] count = { 0 };
+
+        runWithBlockAround(x, y, (ix, iy, block) -> {
+            count[0] += block.isMine() ? 1 : 0;
+            return;
+        });
+
+        return count[0];
+    }
+
+    public Space[][] getGrid() {
+        return grid;
+    }
+
+    public int flip(int x, int y) {
+        if (!started) {
+            generateGrid(x, y);
+            return FLIP_SUCCESS;
+        }
+        if (grid[y][x].isMine())
+            return FLIP_BOMB;
+
+        return flipIgnoreBomb(x, y);
+    }
+
+    private int flipIgnoreBomb(int x, int y) {
+        int minesAround = getSurroundingMineCount(x, y);
+        grid[y][x].flip(minesAround);
+
+        if (minesAround == 0)
+            runWithBlockAround(x, y, (ix, iy, block) -> flipIgnoreBomb(ix, iy));
+
+        this.clickLeft--;
+        if (clickLeft < 1)
+            return FLIP_WIN;
+        return FLIP_SUCCESS;
+    }
+
+    private void runWithBlockAround(int x, int y, BlockAction action) {
         boolean hasLeft = x > 0;
         boolean hasRight = x < grid[0].length - 1;
         boolean hasTop = y > 0;
@@ -49,12 +95,11 @@ public class Minesweeper {
 
         for (int ix = (hasLeft ? -1 : 0); ix < (hasRight ? 2 : 1); ix++)
             for (int iy = (hasTop ? -1 : 0); iy < (hasBottom ? 2 : 1); iy++)
-                count += grid[y + iy][x + ix].isMine() ? 1 : 0;
-
-        return count;
+                if (!(ix == x && iy == y))
+                    action.run(ix, iy, grid[y][x]);
     }
 
-    public Space[][] getGrid() {
-        return grid;
+    private interface BlockAction {
+        void run(int x, int y, Space space);
     }
 }
