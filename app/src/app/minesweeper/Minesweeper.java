@@ -65,10 +65,8 @@ public class Minesweeper {
     }
 
     public int flip(int x, int y) {
-        if (!started) {
+        if (!started)
             generateGrid(x, y);
-            return FLIP_SUCCESS;
-        }
         if (grid[y][x].isMine())
             return FLIP_BOMB;
 
