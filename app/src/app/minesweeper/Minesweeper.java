@@ -33,7 +33,7 @@ public class Minesweeper {
         while (generatedMine < numberOfMine) {
             int randX = random.nextInt(width);
             int randY = random.nextInt(height);
-            if (randX != initX && randY != initY && !grid[randY][randX].isMine()) {
+            if (!(randX == initX && randY == initY) && !grid[randY][randX].isMine()) {
                 grid[randY][randX].setMine();
                 generatedMine++;
             }
