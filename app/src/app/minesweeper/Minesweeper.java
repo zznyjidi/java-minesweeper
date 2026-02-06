@@ -6,6 +6,7 @@ public class Minesweeper {
     public static final int FLIP_SUCCESS = 0;
     public static final int FLIP_BOMB = 1;
     public static final int FLIP_WIN = 2;
+    public static final int FLIP_ALREADY_FLIPPED = 3;
 
     Space[][] grid;
     boolean started;
@@ -75,6 +76,8 @@ public class Minesweeper {
     }
 
     private int flipIgnoreBomb(int x, int y) {
+        if (grid[y][x].isFlipped())
+            return FLIP_ALREADY_FLIPPED;
         int minesAround = getSurroundingMineCount(x, y);
         grid[y][x].flip(minesAround);
 
@@ -95,8 +98,8 @@ public class Minesweeper {
 
         for (int ix = (hasLeft ? -1 : 0); ix < (hasRight ? 2 : 1); ix++)
             for (int iy = (hasTop ? -1 : 0); iy < (hasBottom ? 2 : 1); iy++)
-                if (!(ix == x && iy == y))
-                    action.run(ix, iy, grid[y][x]);
+                if (!(x + ix == x && y + iy == y))
+                    action.run(x + ix, y + iy, grid[y + iy][x + ix]);
     }
 
     private interface BlockAction {
