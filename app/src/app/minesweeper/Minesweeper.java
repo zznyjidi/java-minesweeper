@@ -25,7 +25,7 @@ public class Minesweeper {
         this.width = width;
         this.height = height;
         this.numberOfMine = numberOfMine;
-        this.clickLeft = width * height - numberOfMine - 1;
+        this.clickLeft = width * height - numberOfMine;
 
         grid = new Space[height][width];
         for (int y = 0; y < grid.length; y++) {
@@ -36,6 +36,8 @@ public class Minesweeper {
     }
 
     public void generateGrid(int initX, int initY) {
+        if (started)
+            return;
         int generatedMine = 0;
         Random random = new Random();
 
