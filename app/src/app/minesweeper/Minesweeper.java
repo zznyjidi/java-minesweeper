@@ -57,7 +57,6 @@ public class Minesweeper {
 
         runWithBlockAround(x, y, (ix, iy, block) -> {
             count[0] += block.isMine() ? 1 : 0;
-            return;
         });
 
         return count[0];

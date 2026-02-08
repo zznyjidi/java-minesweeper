@@ -8,12 +8,12 @@ import minesweeper.Space;
 
 public class Main {
     static Pattern commandPattern = Pattern.compile("(flag|flip) (\\d+) (\\d+)");
-    static boolean running = true;
+    static boolean playing = true;
 
     public static void main(String[] args) {
         Minesweeper minesweeper = new Minesweeper(10, 10, 3);
 
-        while (running) {
+        while (playing) {
             printGrid(minesweeper, false);
 
             String command = IO.readln("flag|flip> ");
@@ -34,12 +34,12 @@ public class Main {
                         case Minesweeper.FLIP_BOMB -> {
                             printGrid(minesweeper, true);
                             IO.println("YOU LOSE! ");
-                            running = false;
+                            playing = false;
                         }
                         case Minesweeper.FLIP_WIN -> {
                             printGrid(minesweeper, true);
                             IO.println("YOU WIN! ");
-                            running = false;
+                            playing = false;
                         }
                         case Minesweeper.FLIP_ALREADY_FLIPPED -> {
                             IO.println("BLOCK ALREADY FLIPPED. ");
