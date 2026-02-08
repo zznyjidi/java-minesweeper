@@ -17,6 +17,7 @@ public class Minesweeper {
     int numberOfMine;
 
     int clickLeft;
+    int flagCount;
 
     public Minesweeper(int width, int height, int numberOfMine) {
         if (numberOfMine > width * height - 1)
@@ -66,9 +67,31 @@ public class Minesweeper {
         return grid;
     }
 
+    public int getFlagCount() {
+        return flagCount;
+    }
+
+    public int getMineCount() {
+        return numberOfMine;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void flag(int x, int y) {
         Space space = grid[y][x];
-        space.setFlag(!space.isFlagged());
+        if (space.isFlagged()) {
+            space.setFlag(false);
+            flagCount--;
+        } else {
+            space.setFlag(true);
+            flagCount++;
+        }
     }
 
     public int flip(int x, int y) {

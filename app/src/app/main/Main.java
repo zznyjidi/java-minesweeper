@@ -54,6 +54,9 @@ public class Main {
     }
 
     public static void printGrid(Minesweeper minesweeper, boolean showMine) {
+        int leftMine = minesweeper.getMineCount() - minesweeper.getFlagCount();
+        IO.println("Mine Left: " + leftMine);
+
         Space[][] grid = minesweeper.getGrid();
 
         // Grid X Mark
