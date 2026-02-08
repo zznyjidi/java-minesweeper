@@ -16,39 +16,40 @@ public class Main {
         while (running) {
             printGrid(minesweeper, false);
 
-            String command = IO.readln("> ");
+            String command = IO.readln("flag|flip> ");
             Matcher matcher = commandPattern.matcher(command);
 
-            if (matcher.find()) {
-                String cmd = matcher.group(1);
-                int x = Integer.parseInt(matcher.group(2));
-                int y = Integer.parseInt(matcher.group(3));
+            if (!matcher.find()) {
+                IO.println("INVALID COMMAND. ");
+                continue;
+            }
+            String cmd = matcher.group(1);
+            int x = Integer.parseInt(matcher.group(2));
+            int y = Integer.parseInt(matcher.group(3));
 
-                switch (cmd) {
-                    case "flag" -> minesweeper.flag(x, y);
-                    case "flip" -> {
-                        switch (minesweeper.flip(x, y)) {
-                            case Minesweeper.FLIP_BOMB -> {
-                                printGrid(minesweeper, true);
-                                IO.println("YOU LOSE! ");
-                                running = false;
-                            }
-                            case Minesweeper.FLIP_WIN -> {
-                                printGrid(minesweeper, true);
-                                IO.println("YOU WIN! ");
-                                running = false;
-                            }
-                            case Minesweeper.FLIP_ALREADY_FLIPPED -> {
-                                IO.println("BLOCK ALREADY FLIPPED. ");
-                            }
-                            case Minesweeper.FLIP_FLAGGED -> {
-                                IO.println("BLOCK FLAGGED. ");
-                            }
+            switch (cmd) {
+                case "flag" -> minesweeper.flag(x, y);
+                case "flip" -> {
+                    switch (minesweeper.flip(x, y)) {
+                        case Minesweeper.FLIP_BOMB -> {
+                            printGrid(minesweeper, true);
+                            IO.println("YOU LOSE! ");
+                            running = false;
+                        }
+                        case Minesweeper.FLIP_WIN -> {
+                            printGrid(minesweeper, true);
+                            IO.println("YOU WIN! ");
+                            running = false;
+                        }
+                        case Minesweeper.FLIP_ALREADY_FLIPPED -> {
+                            IO.println("BLOCK ALREADY FLIPPED. ");
+                        }
+                        case Minesweeper.FLIP_FLAGGED -> {
+                            IO.println("BLOCK FLAGGED. ");
                         }
                     }
                 }
             }
-
         }
     }
 
