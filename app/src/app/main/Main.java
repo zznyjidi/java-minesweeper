@@ -10,42 +10,54 @@ public class Main {
     static Pattern commandPattern = Pattern.compile("(flag|flip) (\\d+) (\\d+)");
     static boolean playing = true;
 
+    static final String INPUT_PROMPT = "flag|flip> ";
+
     public static void main(String[] args) {
+        clearConsole();
         Minesweeper minesweeper = new Minesweeper(10, 10, 3);
 
+        String command = "";
         while (playing) {
-            printGrid(minesweeper, false);
+            IO.print(renderGrid(minesweeper, false));
+            command = IO.readln(INPUT_PROMPT);
 
-            String command = IO.readln("flag|flip> ");
+            clearConsole();
+            IO.println(INPUT_PROMPT + command);
+
             Matcher matcher = commandPattern.matcher(command);
 
             if (!matcher.find()) {
-                IO.println("INVALID COMMAND. ");
+                System.err.println("INVALID COMMAND. ");
                 continue;
             }
+
             String cmd = matcher.group(1);
             int x = Integer.parseInt(matcher.group(2));
             int y = Integer.parseInt(matcher.group(3));
+            if (x >= minesweeper.getWidth() || y >= minesweeper.getHeight()) {
+                System.err.println("BLOCK IS OUTSIDE THE GRID. ");
+                continue;
+            }
 
             switch (cmd) {
                 case "flag" -> minesweeper.flag(x, y);
                 case "flip" -> {
                     switch (minesweeper.flip(x, y)) {
                         case Minesweeper.FLIP_BOMB -> {
-                            printGrid(minesweeper, true);
+                            IO.print(renderGrid(minesweeper, true));
                             IO.println("YOU LOSE! ");
                             playing = false;
                         }
                         case Minesweeper.FLIP_WIN -> {
-                            printGrid(minesweeper, true);
+                            IO.print(renderGrid(minesweeper, true));
                             IO.println("YOU WIN! ");
                             playing = false;
                         }
                         case Minesweeper.FLIP_ALREADY_FLIPPED -> {
-                            IO.println("BLOCK ALREADY FLIPPED. ");
+                            System.err.println("BLOCK ALREADY FLIPPED. ");
                         }
                         case Minesweeper.FLIP_FLAGGED -> {
-                            IO.println("BLOCK FLAGGED. ");
+                            System.err.println("BLOCK FLAGGED. ");
                         }
                     }
                 }
@@ -53,32 +65,40 @@ public class Main {
         }
     }
 
-    public static void printGrid(Minesweeper minesweeper, boolean showMine) {
+    public static String renderGrid(Minesweeper minesweeper, boolean showMine) {
+        StringBuilder builder = new StringBuilder();
+
         int leftMine = minesweeper.getMineCount() - minesweeper.getFlagCount();
-        IO.println("Mine Left: " + leftMine);
+        builder.append("Mine Left: " + leftMine + "\n");
 
         Space[][] grid = minesweeper.getGrid();
 
         // Grid X Mark
-        IO.print("   |");
+        builder.append("   |");
         for (int i = 0; i < grid[0].length; i++)
-            IO.print(String.format("%2d", i));
-        IO.println();
+            builder.append(String.format("%2d", i));
+        builder.append("\n");
 
         // Line
-        IO.println("---+-" + "--".repeat(grid[0].length));
+        builder.append("---+-" + "--".repeat(grid[0].length) + "\n");
 
         // Grid
         for (int iy = 0; iy < grid.length; iy++) {
             // Grid Y Mark
-            IO.print(String.format("%2d | ", iy));
+            builder.append(String.format("%2d | ", iy));
 
             // Grid Row
             for (int ix = 0; ix < grid[0].length; ix++) {
                 Space space = grid[iy][ix];
-                IO.print(space.toString() + (showMine ? (space.isMine() ? "<" : " ") : " "));
+                builder.append(space.toString() + (showMine ? (space.isMine() ? "<" : " ") : " "));
             }
-            IO.println();
+            builder.append("\n");
         }
+
+        return builder.toString();
+    }
+
+    public static void clearConsole() {
+        IO.print("\033[H\033[2J");
     }
 }
