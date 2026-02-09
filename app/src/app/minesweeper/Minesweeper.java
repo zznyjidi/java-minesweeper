@@ -137,38 +137,3 @@ public class Minesweeper {
         void run(int x, int y, Space space);
     }
 }
-
-class BeginnerMinesweeper extends Minesweeper {
-    public BeginnerMinesweeper() {
-        super(9, 9, 10);
-    }
-}
-
-class IntermediateMinesweeper extends Minesweeper {
-    public IntermediateMinesweeper() {
-        super(16, 16, 40);
-    }
-}
-
-class ExpertMinesweeper extends Minesweeper {
-    public ExpertMinesweeper() {
-        super(30, 16, 99);
-    }
-}
-
-class RandomMinesweeper extends Minesweeper {
-    public static final int RANDOM_MIN_WIDTH = 1;
-    public static final int RANDOM_MAX_WIDTH = 30;
-
-    public static final int RANDOM_MIN_HEIGHT = 1;
-    public static final int RANDOM_MAX_HEIGHT = 16;
-
-    public RandomMinesweeper() {
-        Random random = new Random();
-        int randWidth = random.nextInt(RANDOM_MIN_WIDTH, RANDOM_MAX_WIDTH + 1);
-        int randHeight = random.nextInt(RANDOM_MIN_HEIGHT, RANDOM_MAX_HEIGHT + 1);
-        int randMineCount = random.nextInt(0, randWidth * randHeight - 1);
-
-        super(randWidth, randHeight, randMineCount);
-    }
-}
