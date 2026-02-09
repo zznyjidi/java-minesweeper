@@ -8,6 +8,20 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    `maven-publish`
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/zznyjidi/java-minesweeper")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
 }
 
 repositories {
