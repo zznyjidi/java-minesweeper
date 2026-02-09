@@ -3,6 +3,7 @@ package main;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import color.ANSIColors;
 import minesweeper.BeginnerLevel;
 import minesweeper.ExpertLevel;
 import minesweeper.IntermediateLevel;
@@ -110,8 +111,13 @@ public class Main {
 
         // Grid X Mark
         builder.append("   |");
-        for (int i = 0; i < grid[0].length; i++)
+        for (int i = 0; i < grid[0].length; i++) {
+            builder.append(i % 2 == 0
+                    ? (ANSIColors.GREY_DARK_BACKGROUND)
+                    : (ANSIColors.GREY_LIGHT_BACKGROUND));
             builder.append(String.format("%2d", i));
+            builder.append(ANSIColors.RESET);
+        }
         builder.append("\n");
 
         // Line
@@ -125,7 +131,10 @@ public class Main {
             // Grid Row
             for (int ix = 0; ix < grid[0].length; ix++) {
                 Space space = grid[iy][ix];
-                builder.append(space.toStringWithColor() + (showMine ? (space.isMine() ? "<" : " ") : " "));
+                builder.append((showMine ? (space.isMine() ? ANSIColors.PURPLE_BACKGROUND : "") : ""));
+                builder.append(space.toStringWithColor());
+                builder.append((showMine ? (space.isMine() ? "<" : " ") : " "));
+                builder.append(ANSIColors.RESET);
             }
             builder.append("\n");
         }

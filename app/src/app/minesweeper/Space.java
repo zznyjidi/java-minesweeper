@@ -1,5 +1,7 @@
 package minesweeper;
 
+import color.ANSIColors;
+
 public class Space {
     boolean mine = false;
     boolean flagged = false;
@@ -43,27 +45,20 @@ public class Space {
         return ".";
     }
 
-    public static final String COLOR_ANSI_RESET = "\u001B[0m";
-    public static final String COLOR_ANSI_BLACK = "\u001B[30m";
-    public static final String COLOR_ANSI_RED = "\u001B[31m";
-    public static final String COLOR_ANSI_BLUE = "\u001B[34m";
-    public static final String COLOR_ANSI_GREEN = "\u001B[32m";
-    public static final String COLOR_ANSI_CYAN = "\u001B[36m";
-
     public String toStringWithColor() {
         if (flipped)
             return switch (minesAround) {
-                case 1 -> COLOR_ANSI_BLUE;
-                case 2 -> COLOR_ANSI_GREEN;
-                case 3 -> COLOR_ANSI_RED;
-                case 4 -> COLOR_ANSI_BLUE;
-                case 5 -> COLOR_ANSI_RED;
-                case 6 -> COLOR_ANSI_CYAN;
-                case 7 -> COLOR_ANSI_BLACK;
+                case 1 -> ANSIColors.BLUE;
+                case 2 -> ANSIColors.GREEN;
+                case 3 -> ANSIColors.RED;
+                case 4 -> ANSIColors.BLUE;
+                case 5 -> ANSIColors.RED;
+                case 6 -> ANSIColors.CYAN;
+                case 7 -> ANSIColors.BLACK;
                 default -> "";
-            } + String.valueOf(minesAround) + COLOR_ANSI_RESET;
+            } + String.valueOf(minesAround);
         if (flagged)
-            return COLOR_ANSI_RED + "F" + COLOR_ANSI_RESET;
+            return ANSIColors.RED + "F";
         return ".";
     }
 }
