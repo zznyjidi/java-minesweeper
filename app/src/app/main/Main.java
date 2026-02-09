@@ -3,18 +3,52 @@ package main;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import minesweeper.BeginnerLevel;
+import minesweeper.ExpertLevel;
+import minesweeper.IntermediateLevel;
 import minesweeper.Minesweeper;
+import minesweeper.RandomLevel;
 import minesweeper.Space;
 
 public class Main {
     static Pattern commandPattern = Pattern.compile("(flag|flip) (\\d+) (\\d+)");
+    static Pattern levelSelectPattern = Pattern
+            .compile("(b(?:eginner)?|i(?:ntermediate)?|e(?:xpert)?|c(?:ustom)?|r(?:andom)?)(?: (\\d*) (\\d*) (\\d*))?");
     static boolean playing = true;
+    static boolean running = true;
 
     static final String INPUT_PROMPT = "flag|flip> ";
 
     public static void main(String[] args) {
+
+        while (running) {
+            String levelSelect = IO.readln("beginner | intermediate | expert | custom | random > ");
+            Matcher levelMatcher = levelSelectPattern.matcher(levelSelect);
+            if (!levelMatcher.find()) {
+                System.err.println("INVALID COMMAND. ");
+                continue;
+            }
+            Minesweeper minesweeper = null;
+            try {
+                minesweeper = switch (levelMatcher.group(1).charAt(0)) {
+                    case 'b' -> new BeginnerLevel();
+                    case 'i' -> new IntermediateLevel();
+                    case 'e' -> new ExpertLevel();
+                    case 'c' -> {
+                        int width = Integer.parseInt(levelMatcher.group(2));
+                        int height = Integer.parseInt(levelMatcher.group(3));
+                        int mineCount = Integer.parseInt(levelMatcher.group(4));
+                        yield new Minesweeper(width, height, mineCount);
+                    }
+                    case 'r' -> new RandomLevel();
+                    default -> throw new IllegalArgumentException();
+                };
+            } catch (NumberFormatException e) {
+                System.err.println("INVALID COMMAND FORMAT. ");
+                System.err.println("custom <width> <height> <numberOfMine>");
+                continue;
+            }
         clearConsole();
-        Minesweeper minesweeper = new Minesweeper(10, 10, 3);
 
         String command = "";
         while (playing) {
@@ -63,6 +97,7 @@ public class Main {
                 }
             }
         }
+    }
     }
 
     public static String renderGrid(Minesweeper minesweeper, boolean showMine) {
