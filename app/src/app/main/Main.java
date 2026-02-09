@@ -48,56 +48,56 @@ public class Main {
                 System.err.println("custom <width> <height> <numberOfMine>");
                 continue;
             }
-        clearConsole();
-
-        String command = "";
-        while (playing) {
-            IO.print(renderGrid(minesweeper, false));
-            command = IO.readln(INPUT_PROMPT);
-
             clearConsole();
-            IO.println(INPUT_PROMPT + command);
 
-            Matcher matcher = commandPattern.matcher(command);
+            String command = "";
+            while (playing) {
+                IO.print(renderGrid(minesweeper, false));
+                command = IO.readln(INPUT_PROMPT);
 
-            if (!matcher.find()) {
-                System.err.println("INVALID COMMAND. ");
-                continue;
-            }
+                clearConsole();
+                IO.println(INPUT_PROMPT + command);
 
-            String cmd = matcher.group(1);
-            int x = Integer.parseInt(matcher.group(2));
-            int y = Integer.parseInt(matcher.group(3));
-            if (x >= minesweeper.getWidth() || y >= minesweeper.getHeight()) {
-                System.err.println("BLOCK IS OUTSIDE THE GRID. ");
-                continue;
-            }
+                Matcher matcher = commandPattern.matcher(command);
 
-            switch (cmd) {
-                case "flag" -> minesweeper.flag(x, y);
-                case "flip" -> {
-                    switch (minesweeper.flip(x, y)) {
-                        case Minesweeper.FLIP_BOMB -> {
-                            IO.print(renderGrid(minesweeper, true));
-                            IO.println("YOU LOSE! ");
-                            playing = false;
-                        }
-                        case Minesweeper.FLIP_WIN -> {
-                            IO.print(renderGrid(minesweeper, true));
-                            IO.println("YOU WIN! ");
-                            playing = false;
-                        }
-                        case Minesweeper.FLIP_ALREADY_FLIPPED -> {
-                            System.err.println("BLOCK ALREADY FLIPPED. ");
-                        }
-                        case Minesweeper.FLIP_FLAGGED -> {
-                            System.err.println("BLOCK FLAGGED. ");
+                if (!matcher.find()) {
+                    System.err.println("INVALID COMMAND. ");
+                    continue;
+                }
+
+                String cmd = matcher.group(1);
+                int x = Integer.parseInt(matcher.group(2));
+                int y = Integer.parseInt(matcher.group(3));
+                if (x >= minesweeper.getWidth() || y >= minesweeper.getHeight()) {
+                    System.err.println("BLOCK IS OUTSIDE THE GRID. ");
+                    continue;
+                }
+
+                switch (cmd) {
+                    case "flag" -> minesweeper.flag(x, y);
+                    case "flip" -> {
+                        switch (minesweeper.flip(x, y)) {
+                            case Minesweeper.FLIP_BOMB -> {
+                                IO.print(renderGrid(minesweeper, true));
+                                IO.println("YOU LOSE! ");
+                                playing = false;
+                            }
+                            case Minesweeper.FLIP_WIN -> {
+                                IO.print(renderGrid(minesweeper, true));
+                                IO.println("YOU WIN! ");
+                                playing = false;
+                            }
+                            case Minesweeper.FLIP_ALREADY_FLIPPED -> {
+                                System.err.println("BLOCK ALREADY FLIPPED. ");
+                            }
+                            case Minesweeper.FLIP_FLAGGED -> {
+                                System.err.println("BLOCK FLAGGED. ");
+                            }
                         }
                     }
                 }
             }
         }
-    }
     }
 
     public static String renderGrid(Minesweeper minesweeper, boolean showMine) {
@@ -125,7 +125,7 @@ public class Main {
             // Grid Row
             for (int ix = 0; ix < grid[0].length; ix++) {
                 Space space = grid[iy][ix];
-                builder.append(space.toString() + (showMine ? (space.isMine() ? "<" : " ") : " "));
+                builder.append(space.toStringWithColor() + (showMine ? (space.isMine() ? "<" : " ") : " "));
             }
             builder.append("\n");
         }
